@@ -1,4 +1,5 @@
-
+using Infrastructure;
+using Application;
 namespace LibraryManagement.API
 {
     public class Program
@@ -14,7 +15,11 @@ namespace LibraryManagement.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
+
+            builder.Services.AddInfrastructure(builder.Configuration)
+                            .AddApplication(builder.Configuration)
+                            .AddApiServices(builder.Configuration);
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
