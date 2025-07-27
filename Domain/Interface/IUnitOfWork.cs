@@ -9,7 +9,8 @@ namespace Domain.Interface
 	public interface IUnitOfWork
 	{
 		IAuthorRepository AuthorRepository { get; }
-		IBookRepository BookRepository { get; }	
+		IBookRepository BookRepository { get; }
+		IUserRepository UserRepository { get; }	
 		Task BeginTransactionAsync();
 		Task CommitTransaction();
 		Task RollbackTransaction();

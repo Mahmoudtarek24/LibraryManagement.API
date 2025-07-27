@@ -10,7 +10,7 @@ namespace Application.ResponseDTO_s.Book
 	{
 		public string Name { get; set; } 
 		public string Description { get; set; } 
-		public bool? IsAvailableForRental { get; set; }
+		public bool IsAvailableForRental { get; set; }
 		public string ImageUrl { get; set; } = " ";
 		public DateTime PublishingDate { get; set; }
 		public int AuthorId { get; set; }

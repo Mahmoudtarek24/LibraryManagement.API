@@ -14,15 +14,15 @@ namespace Infrastructure.UnitOfWork
 	{
 		private readonly LibraryDbContext context;
 		private IDbContextTransaction? objTrans = null;
-
 		public IAuthorRepository AuthorRepository { get;private set; }
-
 		public IBookRepository BookRepository { get; private set; }
+		public IUserRepository UserRepository { get; private set; }
 
 		public UnitOfWork(LibraryDbContext context)
 		{
 			AuthorRepository = new AuthorRepository(context);
 			BookRepository = new BookRepository(context);	
+			UserRepository = new UserRepository(context);	
 		}
 		public async Task BeginTransactionAsync()
 		{

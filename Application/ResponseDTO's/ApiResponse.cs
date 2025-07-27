@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.ResponseDTO_s
 {
-	public class ApiResponse<T>
+	public class ApiResponse<T> ///why can not make it static
 	{
 		public T Data { get; set; }
 	    public int StatusCode { get; set; }		

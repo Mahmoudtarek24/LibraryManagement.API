@@ -11,7 +11,7 @@ namespace Domain.Entities
 		public int Id { get; set; }
 		public string Name { get; set; } = null!;
 		public string Description { get; set; } = null!;
-		public bool? IsAvailableForRental { get; set; }
+		public bool IsAvailableForRental { get; set; }
 		public string ImageUrl { get; set; } = null!;
 		public DateTime PublishingDate { get; set; }
 		public int AuthorId { get; set; }

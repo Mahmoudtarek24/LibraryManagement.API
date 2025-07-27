@@ -5,6 +5,7 @@ using Application.ResponseDTO_s;
 using Application.ResponseDTO_s.Book;
 using Domain.Entities;
 using Domain.Interface;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,7 +99,7 @@ namespace Application.Services
 				book.ImageUrl = dto.ImageUrl;
 
 			if (dto.IsAvailableForRental is not null)
-				book.IsAvailableForRental = dto.IsAvailableForRental;
+				book.IsAvailableForRental = (bool)dto.IsAvailableForRental;
 
 			if (dto.PublishingDate is not null)
 				book.PublishingDate =(DateTime) dto.PublishingDate;
@@ -121,25 +122,39 @@ namespace Application.Services
 			return ApiResponse<ConfirmationResponseDto>.Success(response);
 		}
 
-		public async Task<ApiResponse<List<BookResponseDto>>> GetBooksByAuthorAsync(int authorId)
+		public async Task<ApiResponse<List<BooksByAuthorDto>>> GetBooksByAuthorAsync(int authorId)
 		{
 			if(authorId <= 0)
-				return ApiResponse<List<BookResponseDto>>.ValidationError("Not valid value for id");
+				return ApiResponse<List<BooksByAuthorDto>>.ValidationError("Not valid value for id");
 
 			var Books = await unitOfWork.BookRepository.GetBooksByAuthorAsync(authorId);
+		
+			return ApiResponse<List<BooksByAuthorDto>>.Success(Books);		
+		}
 
-			var response=Books.Select(e=>new BookResponseDto()
+		public async Task<PageResponse<List<BookWithAuthorDto>>> GetAllBooksAsync(BookQueryParameter qP)
+		{
+			var filter = new BookFilter()
 			{
-				AuthorId = authorId,
-				Description = e.Description,
-				AuthorName=e.Author.Name,	
-				ImageUrl=e.ImageUrl,
-				IsAvailableForRental=e.IsAvailableForRental,	
-				Id = e.Id,
-				Name = e.Name,
-				PublishingDate=e.PublishingDate,	
-			}).ToList();		
-			return ApiResponse<List<BookResponseDto>>.Success(response);		
+				SearchTearm = qP.SearchTearm,
+				IsAvailableForRental = qP.IsAvailableForRental,
+				PageNumber = qP.PageNumber,
+				PageSize = qP.PageSize,
+			};
+
+			var (books, TotalCount) = await unitOfWork.BookRepository.GetAllBookWithPagination(filter);
+
+			if (TotalCount == 0)
+				return PageResponse<List<BookWithAuthorDto>>.Create(null,0,0,0, "No books found matching your criteria");
+
+			return PageResponse<List<BookWithAuthorDto>>.Create(books, qP.PageNumber, qP.PageSize, TotalCount);
+		}
+
+		public async Task<ApiResponse<List<BookWithAuthorDto>>> GetBooksAvailabilityAsync(bool isAvailable)
+		{
+			var books=await unitOfWork.BookRepository.GetBooksByAvailabilityAsync(isAvailable);
+
+			return ApiResponse<List<BookWithAuthorDto>>.Success(books);
 		}
 	}
 }

@@ -41,6 +41,18 @@ namespace LibraryManagement.Controllers
 			var result = await bookService.GetBooksByAuthorAsync(authorId);
 			return StatusCode(result.StatusCode, result);
 		}
-
+		[HttpGet("all")]
+		public async Task<IActionResult> getAllBooks([FromQuery]BookQueryParameter queryParameter)
+		{
+			var result = await bookService.GetAllBooksAsync(queryParameter);
+			return StatusCode(result.StatusCode, result);
+		}
+		
+        [HttpGet("availableStatus")]
+		public async Task<IActionResult> getAvailableBooks(bool isAvailable)
+		{
+			var result = await bookService.GetBooksAvailabilityAsync(isAvailable);
+			return StatusCode(result.StatusCode, result);
+		}
 	}
 }
