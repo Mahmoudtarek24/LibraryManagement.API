@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Mappings\" />
-    <Folder Include="ResponseDTO%27s\Users\" />
   </ItemGroup>
 
   <ItemGroup>

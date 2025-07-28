@@ -30,7 +30,7 @@ namespace Application.ResponseDTO_s
 				Message = message
 			};
 		}
-		public static ApiResponse<T> NotFound(string message )
+		public static ApiResponse<T> NotFound(string message)
 		{
 			return new ApiResponse<T>
 			{
@@ -59,6 +59,17 @@ namespace Application.ResponseDTO_s
 			};
 			result.Erorrs.AddRange(errors);
 			return result;
+		}
+		public static ApiResponse<T> Unauthorized(string errors)
+		{
+			return new ApiResponse<T>
+			{
+				StatusCode = 401,
+				IsSuccessed = false,
+				ErrorCode = "UNAUTHORIZED",
+				Message = errors,
+			};
+
 		}
 	}
 	

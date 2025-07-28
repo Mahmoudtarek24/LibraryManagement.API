@@ -16,6 +16,7 @@ namespace Application
 		{
 			services.AddScoped<IAuthorService,AuthorService>();
 			services.AddScoped<IBookService, BookService>();
+			services.AddScoped<IUserService, UserService>();
 			return services;
 		}
 	}

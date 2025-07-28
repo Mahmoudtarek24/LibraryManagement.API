@@ -1,5 +1,7 @@
-﻿using Domain.Interface;
+﻿using Application.Interfaces;
+using Domain.Interface;
 using Infrastructure.Context;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,7 @@ namespace Infrastructure
 				options.UseSqlServer(configuration.GetConnectionString("LibraryDbConnection"));
 			});
 			services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+			services.AddScoped<ITokenGenerator, JwtTokenGenerator>();
 			return services;	
 		}
 	}

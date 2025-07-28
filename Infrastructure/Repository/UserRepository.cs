@@ -72,7 +72,7 @@ namespace Infrastructure.Repository
 							@PageNumber={filter.PageNumber},
 							@PageSize={filter.PageSize},
 							@SearchTearm={filter.SearchTearm},
-							@orderBy={filter.orderBy}
+							@orderBy={filter.orderBy},
 							@TotalCount={totalCount} OUTPUT ").ToListAsync();
 
 			return (users, (int)totalCount.Value);
@@ -80,34 +80,43 @@ namespace Infrastructure.Repository
 
 		public async Task<int> ChangePasswordAsync(string newPassword, string oldPassword, int Id)
 		{
-			var UserId = new SqlParameter()
+			var result = new SqlParameter()
 			{
-				ParameterName = "@UserId",
+				ParameterName = "@Result",
 				Direction = ParameterDirection.Output,
 				SqlDbType = SqlDbType.Int,
 			};
-			await context.Database.ExecuteSqlInterpolatedAsync($@"EXEC spChangePassword 
-				@NewPassword={newPassword},
-				@OldPassword={oldPassword},
-				@UserId={Id} OUTPUT");
 
-			return (int)UserId.Value;	
+			await context.Database.ExecuteSqlInterpolatedAsync($@"EXEC spChangePassword 
+						@NewPassword={newPassword},
+						@OldPassword={oldPassword},
+						@UserId={Id},
+						@Result={result} OUTPUT");
+
+			return (int)result.Value;
 		}
 
-		public async Task<int> LoginAsync(string email, string password)
+		public async Task<User?> LoginAsync(string email, string password)
 		{
-			var resultValue = new SqlParameter()
-			{
-				ParameterName = "@UserId",
-				Direction = ParameterDirection.Output,
-				SqlDbType = SqlDbType.Int,
-			};
-			await context.Database.ExecuteSqlInterpolatedAsync($@"EXEC spLogin 
-				@password={password},
-				@email={email},
-				@resultValue={resultValue} OUTPUT");
+			var users = await context.Users
+				.FromSqlInterpolated($@"EXEC spLogin  @Email={email},  @Password={password}").ToListAsync();
 
-			return (int)resultValue.Value;
+			return users.FirstOrDefault(); 
+		}
+
+		public async Task<bool> IsEmailExistsAsync(string email)
+		{
+			var existsParam = new SqlParameter()
+			{
+				ParameterName = "@Exists",
+				Direction = ParameterDirection.Output,
+				SqlDbType = SqlDbType.Bit
+			};
+
+			await context.Database.ExecuteSqlInterpolatedAsync(
+				$"EXEC spCheckEmailExists @Email={email}, @Exists={existsParam} OUTPUT");
+
+			return (bool)existsParam.Value;
 		}
 	}
 }

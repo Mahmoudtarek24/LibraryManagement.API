@@ -13,6 +13,7 @@ namespace Domain.Interface
 		Task<List<User>> SearchUsersAsync(string searchTearm);
 		Task<(List<User>,int)> GetAllUsersAsync(UserFilter filter);
 		Task<int> ChangePasswordAsync(string newPassword, string oldPassword, int Id);
-		Task<int> LoginAsync(string email , string password);		
+		Task<User?> LoginAsync(string email, string password);
+		Task<bool> IsEmailExistsAsync(string email);
 	}
 }

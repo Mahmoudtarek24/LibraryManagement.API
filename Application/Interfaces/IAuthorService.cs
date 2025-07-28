@@ -1,6 +1,7 @@
 ﻿using Application.DTO_s.Author;
 using Application.ResponseDTO_s;
 using Application.ResponseDTO_s.Author;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
