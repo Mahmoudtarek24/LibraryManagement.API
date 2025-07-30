@@ -18,11 +18,14 @@ namespace Infrastructure.UnitOfWork
 		public IBookRepository BookRepository { get; private set; }
 		public IUserRepository UserRepository { get; private set; }
 
+		public IBorrowingRepository BorrowingRepository { get; private set; }
+
 		public UnitOfWork(LibraryDbContext context)
 		{
 			AuthorRepository = new AuthorRepository(context);
 			BookRepository = new BookRepository(context);	
-			UserRepository = new UserRepository(context);	
+			UserRepository = new UserRepository(context);
+			BorrowingRepository = new BorrowingRepository(context);
 		}
 		public async Task BeginTransactionAsync()
 		{

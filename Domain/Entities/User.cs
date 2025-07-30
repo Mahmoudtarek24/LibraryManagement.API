@@ -14,5 +14,7 @@ namespace Domain.Entities
 		public string Password { get; set; } = null!;
 		public DateTime CreateOn { get; set; }
 		public string Role { get; set; } = null!;
+		public virtual ICollection<Borrowing> Borrowings { get; set; }
+
 	}
 }

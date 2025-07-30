@@ -10,7 +10,8 @@ namespace Domain.Interface
 	{
 		IAuthorRepository AuthorRepository { get; }
 		IBookRepository BookRepository { get; }
-		IUserRepository UserRepository { get; }	
+		IUserRepository UserRepository { get; }
+		IBorrowingRepository BorrowingRepository { get; }	
 		Task BeginTransactionAsync();
 		Task CommitTransaction();
 		Task RollbackTransaction();

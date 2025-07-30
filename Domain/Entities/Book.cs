@@ -16,5 +16,6 @@ namespace Domain.Entities
 		public DateTime PublishingDate { get; set; }
 		public int AuthorId { get; set; }
 		public virtual Author Author { get; set; } = null!;
+		public virtual ICollection<Borrowing> Borrowings { get; set; }
 	}
 }

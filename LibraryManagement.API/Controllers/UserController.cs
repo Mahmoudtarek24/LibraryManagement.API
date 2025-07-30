@@ -40,7 +40,7 @@ namespace LibraryManagement.Controllers
 		{
 			var result = await userService.SearchUsersAsync(searchTerm);
 			return StatusCode(result.StatusCode, result);
-		}
+		} 
 
 		[HttpGet("all")]
 		public async Task<IActionResult> GetAllUsers([FromQuery] UserQueryParameter query)
