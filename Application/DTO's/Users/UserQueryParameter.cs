@@ -12,7 +12,6 @@ namespace Application.DTO_s.Users
 		const int maxSize = 20;
 		private int _pageSize;
 		public string? SearchTearm { get; set; }
-		public UserOrdering Ordering { get; set; }	
 		public int PageNumber { get; set; } = 1;
 
 		public int PageSize

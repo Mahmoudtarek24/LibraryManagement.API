@@ -15,7 +15,7 @@ namespace Application.Interfaces
 		Task<ApiResponse<UserResponseDto>> GetUserByIdAsync(int id);
 		Task<ApiResponse<List<UserResponseDto>>> SearchUsersAsync(string searchTerm);
 		Task<PageResponse<List<UserResponseDto>>> GetAllUsersAsync(UserQueryParameter query);
-		Task<ApiResponse<ConfirmationResponseDto>> ChangePasswordAsync(ChangePasswordDto dto);
+		Task<ApiResponse<ConfirmationResponseDto>> ChangePasswordAsync(int userId,ChangePasswordDto dto);
 		Task<ApiResponse<LoginRsponseDto>> LoginAsync(LoginDto dto);
 	}
 }

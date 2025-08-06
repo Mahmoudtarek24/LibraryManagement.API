@@ -58,7 +58,7 @@ namespace Infrastructure.Repository
 							          .ToListAsync());
 
 
-		public async Task<(List<User>, int)> GetAllUsersAsync(UserFilter filter)
+		public async Task<(List<UserDto>, int)> GetAllUsersAsync(BaseFilter filter)
 		{
 			var totalCount = new SqlParameter()
 			{
@@ -68,11 +68,10 @@ namespace Infrastructure.Repository
 				Value = 0
 			};
 
-			var users = await context.Users.FromSqlInterpolated($@"EXEC spGetAllMembers 
+			var users = await context.Database.SqlQuery<UserDto>($@"EXEC spGetAllMembers 
 							@PageNumber={filter.PageNumber},
 							@PageSize={filter.PageSize},
 							@SearchTearm={filter.SearchTearm},
-							@orderBy={filter.orderBy},
 							@TotalCount={totalCount} OUTPUT ").ToListAsync();
 
 			return (users, (int)totalCount.Value);

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -63,12 +64,28 @@ namespace Infrastructure.Repository
 				SqlDbType = SqlDbType.Int,
 				Direction = ParameterDirection.Output
 			};
+			var MemberId = new SqlParameter()
+			{
+				ParameterName = "@MemberId",
+				Value = entity.MemberId,
+				SqlDbType = SqlDbType.Int
+			};
+			var BookId = new SqlParameter()
+			{
+				ParameterName = "@BookId",
+				Value = entity.BookId,
+				SqlDbType = SqlDbType.Int
+			};
+			var ActualReturnDate = new SqlParameter()
+			{
+				ParameterName = "@ActualReturnDate",
+				Value = entity.ActualReturnDate,
+				SqlDbType = SqlDbType.DateTime
+			};
 
-			await context.Database.ExecuteSqlInterpolatedAsync($@"EXEC spReturnBook
-					@MemberId={entity.MemberId},
-					@BookId={entity.BookId},
-					@ActualReturnDate={entity.ActualReturnDate},
-					@BorrowId={updateBorrowId} output ");
+			await context.Database.ExecuteSqlRawAsync(
+				"EXEC spReturnBook @MemberId, @BookId, @ActualReturnDate, @updateBorrowId OUTPUT",
+				MemberId, BookId, ActualReturnDate, updateBorrowId);
 
 			return (int)updateBorrowId.Value;
 		}
@@ -120,7 +137,7 @@ namespace Infrastructure.Repository
 			return memberBorrowingHistory;
 		}
 
-		public async Task<List<MostBorrowedBooks>> GetMostBorrowedBooksAsync(int memberId)
+		public async Task<List<MostBorrowedBooks>> GetMostBorrowedBooksAsync()
 		{
 			var mostBorrowedBooks = await context.Database.SqlQuery<MostBorrowedBooks>
 				   ($@"EXEC spGetMostBorrowedBooks").ToListAsync();

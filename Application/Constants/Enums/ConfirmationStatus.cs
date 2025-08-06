@@ -21,5 +21,7 @@ namespace Application.Constants.Enums
 		Cancelled,
 		register,
 		Warning,
+		Borrowing,
+		Returned
 	}
 }

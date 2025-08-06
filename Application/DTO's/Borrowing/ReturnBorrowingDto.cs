@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace Application.DTO_s.Borrowing
 {
-	public class UserFilter :BaseFilter
+	public class ReturnBorrowingDto
 	{
-		public string orderBy {  get; set; }	
+		public int BookId { get; set; }	
 	}
 }

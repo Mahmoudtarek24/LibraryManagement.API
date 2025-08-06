@@ -14,5 +14,6 @@ namespace Domain.Interface
 		Task<List<BooksByAuthorDto>> GetBooksByAuthorAsync(int AuthorId);
 		Task<(List<BookWithAuthorDto>,int)> GetAllBookWithPagination(BookFilter filter);
 		Task<List<BookWithAuthorDto>> GetBooksByAvailabilityAsync(bool isAvailable);
+		Task<bool> IsBookAvailableForRentalAsync(int bookId);
 	}
 }

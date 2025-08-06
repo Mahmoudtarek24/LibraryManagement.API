@@ -15,6 +15,6 @@ namespace Domain.Interface
 		Task<(List<BorrowedBooks>,int)> GetCurrentBorrowedBooksAsync(BaseFilter filter);
 		Task<(List<BorrowedBooks>,int)> GetOverdueBooksAsync(BaseFilter filter);
 		Task<List<MemberBorrowingHistory>> GetMemberBorrowingHistoryAsync(int memberId);
-		Task<List<MostBorrowedBooks>> GetMostBorrowedBooksAsync(int memberId);
+		Task<List<MostBorrowedBooks>> GetMostBorrowedBooksAsync();
 	}
 }

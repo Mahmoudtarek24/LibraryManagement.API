@@ -53,12 +53,11 @@ namespace Application.Services
 
 		public async Task<PageResponse<List<UserResponseDto>>> GetAllUsersAsync(UserQueryParameter query)
 		{
-			var filter = new UserFilter
+			var filter = new BaseFilter
 			{
 				SearchTearm = query.SearchTearm,
 				PageNumber = query.PageNumber,
 				PageSize = query.PageSize,
-				orderBy = query.Ordering.ToString() 
 			};
 
 			var (users, totalCount) = await unitOfWork.UserRepository.GetAllUsersAsync(filter);
@@ -66,7 +65,14 @@ namespace Application.Services
 			if (totalCount == 0)
 				return PageResponse<List<UserResponseDto>>.Create(null,0,0,0,"No users found matching your criteria");
 
-			var userDtos = users.Select(e => MappUserToDto(e)).ToList();
+			var userDtos = users.Select(e=>new UserResponseDto
+			{
+				Id = e.Id,	
+				CreateOn = e.CreateOn,
+				Email = e.Email,
+				FullName = e.FullName,
+				Role = e.Role,
+			}).ToList();
 
 			return PageResponse<List<UserResponseDto>>.Create(userDtos, filter.PageNumber, filter.PageSize, totalCount);
 		}
@@ -83,12 +89,12 @@ namespace Application.Services
 			};
 		}
 
-		public async Task<ApiResponse<ConfirmationResponseDto>> ChangePasswordAsync(ChangePasswordDto dto)
+		public async Task<ApiResponse<ConfirmationResponseDto>> ChangePasswordAsync(int userId, ChangePasswordDto dto)
 		{
-			if (dto.userId <= 0 || string.IsNullOrWhiteSpace(dto.oldPassword) || string.IsNullOrWhiteSpace(dto.newPassword))
+			if (userId <= 0 || string.IsNullOrWhiteSpace(dto.oldPassword) || string.IsNullOrWhiteSpace(dto.newPassword))
 				return ApiResponse<ConfirmationResponseDto>.ValidationError("Invalid input data.");
 
-			var result = await unitOfWork.UserRepository.ChangePasswordAsync(dto.newPassword, dto.oldPassword, dto.userId);
+			var result = await unitOfWork.UserRepository.ChangePasswordAsync(dto.newPassword, dto.oldPassword, userId);
 
 			if (result == -1)
 				return ApiResponse<ConfirmationResponseDto>.ValidationError("Old password is incorrect.");

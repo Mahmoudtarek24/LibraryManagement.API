@@ -17,6 +17,7 @@ namespace Application
 			services.AddScoped<IAuthorService,AuthorService>();
 			services.AddScoped<IBookService, BookService>();
 			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IBorrowingService, BorrowingService>();
 			return services;
 		}
 	}

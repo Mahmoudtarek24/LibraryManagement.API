@@ -15,7 +15,7 @@ namespace Infrastructure.Repository
 {
 	internal class BookRepository : IBookRepository
 	{
-		private readonly LibraryDbContext context; 
+		private readonly LibraryDbContext context;    
 		public BookRepository(LibraryDbContext context)
 		{
 			this.context = context;
@@ -110,6 +110,26 @@ namespace Infrastructure.Repository
 			var books = await context.Database
 				.SqlQuery<BookWithAuthorDto>($"EXEC spGetAvailableBooks @IsAvailableForRental={isAvailable}").ToListAsync();
 			return books;
+		}
+
+		public async Task<bool> IsBookAvailableForRentalAsync(int bookId)
+		{
+			var isAvailable = new SqlParameter()
+			{
+				ParameterName = "@IsAvailable",
+				Direction = ParameterDirection.Output,
+				SqlDbType = SqlDbType.Bit,
+			};
+			var bookIdParam = new SqlParameter()
+			{
+				ParameterName = "@bookId",
+				Value = bookId,
+				SqlDbType = SqlDbType.Int
+			};
+			await context.Database.ExecuteSqlRawAsync
+				($"EXEC spIsBookAvailableForRental @bookId, @IsAvailable OUTPUT", bookIdParam, isAvailable);
+
+			return (bool)isAvailable.Value;
 		}
 	}
 }

@@ -1,7 +1,9 @@
 ﻿using Application.DTO_s.Users;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LibraryManagement.Controllers
 {
@@ -28,14 +30,23 @@ namespace LibraryManagement.Controllers
 			return StatusCode(result.StatusCode, result);
 		}
 
-		[HttpGet("{id:int}")]
-		public async Task<IActionResult> GetUserById(int id)
+		[HttpGet("By-Id")]
+		public async Task<IActionResult> GetUserById([FromQuery] int? memberId)
 		{
-			var result = await userService.GetUserByIdAsync(id);
+			var role = User.FindFirst(ClaimTypes.Role).Value;
+
+			if (role == "Admin" && memberId is null)
+				return BadRequest("Member ID is required when accessed by an admin.");
+
+			int userId = role == "Admin" ? memberId!.Value
+								   : int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+			var result = await userService.GetUserByIdAsync(userId);
 			return StatusCode(result.StatusCode, result);
 		}
 
 		[HttpGet("search")]
+		[Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
 		public async Task<IActionResult> SearchUsers([FromQuery] string searchTerm)
 		{
 			var result = await userService.SearchUsersAsync(searchTerm);
@@ -43,6 +54,7 @@ namespace LibraryManagement.Controllers
 		} 
 
 		[HttpGet("all")]
+		[Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
 		public async Task<IActionResult> GetAllUsers([FromQuery] UserQueryParameter query)
 		{
 			var result = await userService.GetAllUsersAsync(query);
@@ -50,9 +62,14 @@ namespace LibraryManagement.Controllers
 		}
 
 		[HttpPut("change-password")]
+		[Authorize(AuthenticationSchemes = "Bearer")]
 		public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
 		{
-			var result = await userService.ChangePasswordAsync(dto);
+			var user = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+			if (user is null)
+				return Unauthorized("you shoud login to can borrow book");
+
+			var result = await userService.ChangePasswordAsync(int.Parse(user), dto);
 			return StatusCode(result.StatusCode, result);
 		}
 	}
